@@ -8,10 +8,14 @@ def make_log(type, file, error):
     import logging
     from time import sleep
     
+    # Set up the format of the log entry. It starts with date and time, the type of log
+    # entry (ERROR, INFO etc.) the name of the file which called it and the message.
     log_format = '%(asctime)s [%(levelname)s] <%(name)s> %(message)s'
+    
     logging.basicConfig(filename = file, level = logging.DEBUG, format = log_format)
     logger = logging.getLogger(__file__)
     
+    # Conditionals to generate the appropriate log entry.
     if type == 'exception':
         logger.exception(error)
         open('error.log', 'a').write('\n')  
@@ -20,6 +24,9 @@ def make_log(type, file, error):
 
 # Helper function which parses json whether it's from a json file or from a python dict.    
 def parse_json(json_data, option):
+    # Conditionals to check and see if the json_data parameter is a dict or not. It then
+    # dictates whether a json file should be written (json_data == dict) or if a json file
+    # should be read (json_data != dict).
     if type(json_data) == dict:
         try:
             with open('settings.json', option) as data:
@@ -40,13 +47,17 @@ def parse_json(json_data, option):
             make_log('exception', 'error.log', error)
             
             return None               
-    
+
+# Checks to see if a pathname entered by the user is valid based on Windows and Unix standards.
+# The pathname is matched against a regex string.            
 def check_valid_path(dir, operating_system):
     if operating_system == 'Windows':
         return re.match(r"^[A-Za-z]+?:\\[^<>:\"/\|\?\*]*\\*\.?[^<>:\"/\|\?\*]*$", dir)
     else:
         return None
-    
+
+# Requests that the user enter a pathname and checks it to see if it's valid based on their
+# operating system.
 def get_valid_path(label, operating_system):
     while True:
         inputted_pathname = input('Enter {0} directory: '.format(label))
@@ -54,7 +65,7 @@ def get_valid_path(label, operating_system):
             return inputted_pathname
         print('\nThat path is not valid! Please enter a valid path for your OS.\n')
     
-# Helper function, returns a tuple which includes the OS and system architecture of the user's
+# Returns a tuple which includes the OS and system architecture of the user's
 # computer.
 def get_settings(json_file):
 
