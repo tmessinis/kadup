@@ -1,25 +1,27 @@
 import platform, backup_models, proc_helpers
 
+settings = {}
+
 BACKUP_OBJECTS_DICT = {
-    'Windows': backup_models.WindowsBackup('Windows'),
-    'Darwin': backup_models.UnixBackup('Unix'),
-    'Linux': backup_models.UnixBackup('Unix')
+    'Windows': backup_models.WindowsBackup(settings),
+    'Darwin': backup_models.UnixBackup(settings),
+    'Linux': backup_models.UnixBackup(settings)
 }
 
 def main():
     try:
-        machine_info = proc_helpers.get_machine_info('settings.json')
+        settings = proc_helpers.get_settings('settings.json')
         
-        if machine_info == None:
+        if settings == None:
             main()
-        
-        operating_system = machine_info[0]
-        architecture = machine_info[1]
+            
+        operating_system = settings['Operating_System']
+        architecture = settings['Architecture']
         
         backup_dir = proc_helpers.get_valid_path('backup', operating_system)
         dest_dir = proc_helpers.get_valid_path('destination', operating_system)
         
-        backup_object = BACKUP_OBJECTS_DICT[machine_info[0]]
+        backup_object = BACKUP_OBJECTS_DICT[operating_system]
         print(backup_object)
         return None
         

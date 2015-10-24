@@ -57,13 +57,13 @@ def get_valid_path(label, operating_system):
     
 # Helper function, returns a tuple which includes the OS and system architecture of the user's
 # computer.
-def get_machine_info(json_file):
+def get_settings(json_file):
 
     parsed_json = parse_json(json_file, 'r')
     
     if parsed_json != None:   
         try:
-            return parsed_json['Operating_System'], parsed_json['Architecture']
+            return parsed_json
         except Exception as error:
             print('The entry for Operating_System is missing in settings.json! Check error.log')
             make_log('exception', 'error.log', error)
