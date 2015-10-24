@@ -1,16 +1,14 @@
 import platform, backup_models, proc_helpers
 
-settings = {}
-
-BACKUP_OBJECTS_DICT = {
-    'Windows': backup_models.WindowsBackup(settings),
-    'Darwin': backup_models.UnixBackup(settings),
-    'Linux': backup_models.UnixBackup(settings)
-}
-
 def main():
     try:
         settings = proc_helpers.get_settings('settings.json')
+        
+        BACKUP_OBJECTS_DICT = {
+                                'Windows': backup_models.WindowsBackup(settings),
+                                'Darwin': backup_models.UnixBackup(settings),
+                                'Linux': backup_models.UnixBackup(settings)
+                            }
         
         if settings == None:
             main()
@@ -22,7 +20,7 @@ def main():
         dest_dir = proc_helpers.get_valid_path('destination', operating_system)
         
         backup_object = BACKUP_OBJECTS_DICT[operating_system]
-        print(backup_object)
+        print(backup_object.get_executables())
         return None
         
     except Exception as error:

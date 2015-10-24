@@ -1,6 +1,5 @@
 import json, re
 
-from os import path
 from platform import system, machine
 
 # A helper function that will create log entries based on the type provided. It can be
