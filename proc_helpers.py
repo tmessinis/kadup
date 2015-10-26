@@ -22,6 +22,21 @@ def make_log(type, file, error):
 
     sleep(5)
 
+def make_json():
+    from os import urandom
+    from hashlib import sha256
+    
+    json_data = {
+        #'ID': '{0}'.format(sha256(urandom(666)).hexdigest()),
+        'Settings': {
+            'Operating_System': system(),
+            'Architecture': machine()
+        }
+        'Index': {}
+    }
+    
+    return json_data
+    
 # Helper function which parses json whether it's from a json file or from a python dict.    
 def parse_json(json_data, option):
     # Conditionals to check and see if the json_data parameter is a dict or not. It then
@@ -64,6 +79,13 @@ def get_valid_path(label, operating_system):
         if check_valid_path(inputted_pathname, operating_system):
             return inputted_pathname
         print('\nThat path is not valid! Please enter a valid path for your OS.\n')
+        
+def get_valid_yes_no(question_text):
+    while True:
+        user_answer = input('{0}'.format(question_text))
+        if user_answer is 'y' or 'yes' or 'n' or 'no':
+            return user_answer
+        print('\nThat is no a valid response!')
     
 # Returns a tuple which includes the OS and system architecture of the user's
 # computer.
@@ -71,7 +93,7 @@ def get_settings(json_file):
 
     parsed_json = parse_json(json_file, 'r')
     
-    if parsed_json != None:   
+    if parsed_json != None:
         try:
             return parsed_json
         except Exception as error:
@@ -80,8 +102,7 @@ def get_settings(json_file):
             
             return None
     else:
-        json_data = {"Operating_System": system(),
-                     "Architecture": machine()}
+        json_data = make_json()
         parse_json(json_data, 'w')
         
         

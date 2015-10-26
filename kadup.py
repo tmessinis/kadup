@@ -12,16 +12,16 @@ def main():
         
         if settings == None:
             main()
+        else:    
+            operating_system = settings['Settings']['Operating_System']
+            architecture = settings['Settings']['Architecture']
             
-        operating_system = settings['Operating_System']
-        architecture = settings['Architecture']
-        
-        backup_dir = proc_helpers.get_valid_path('backup', operating_system)
-        dest_dir = proc_helpers.get_valid_path('destination', operating_system)
-        
-        backup_object = BACKUP_OBJECTS_DICT[operating_system]
-        print(backup_object.get_executables())
-        return None
+            backup_dir = proc_helpers.get_valid_path('backup', operating_system)
+            dest_dir = proc_helpers.get_valid_path('destination', operating_system)
+            
+            backup_object = BACKUP_OBJECTS_DICT[operating_system]
+            print(backup_object.get_executables())
+            return None
         
     except Exception as error:
         print('Kadup has encountered an error. Please check error.log.')

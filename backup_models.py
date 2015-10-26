@@ -7,10 +7,18 @@ from string import ascii_uppercase
 class BackupObject(object):
     def __init__(self, settings):
         self.settings = settings
-        
-    def return_settings(self):
-        return self.settings
 
+    def cli_questions(self):
+        return_dict = {}
+        
+        print('Welcome to Kadup backup!\n')
+        return_dict['backup_dir'] = \
+        proc_helpers.get_valid_path('backup', self.settings['Settings']['Operating_System'])
+        return_dict['dest_dict'] = \
+        proc_helpers.get_valid_path('destination', self.settings['Settings']['Operating_System'])
+        return_dict['schedule'] = \
+        proc_helpers.get_valid_yes_no('Is this a one time task or is it going to repeat?')
+        
 
 class WindowsBackup(BackupObject):
     def __init__(self, settings):
@@ -27,7 +35,7 @@ class WindowsBackup(BackupObject):
         drive_letters = []
         
         # New dict entry for the executables. They are going to be part of a sub-dict.
-        self.settings['Executables'] = {}
+        self.settings['Settings']['Executables'] = {}
         
         # For loop to find all the drive letters in the system.
         for drive in ascii_uppercase:
@@ -35,7 +43,7 @@ class WindowsBackup(BackupObject):
                 drive_letters.append(drive)
         
         # Check to see if the user's system is either 64 or 32 bit.
-        if self.settings['Architecture'] == 'AMD64':
+        if self.settings['Settings']['Architecture'] == 'AMD64':
             architecture = '64'
         else:
             architecture = '32'
@@ -45,9 +53,11 @@ class WindowsBackup(BackupObject):
         for drive in drive_letters:
             for root, dirs, files in walk('{0}:\\cygwin{1}\\'.format(drive, architecture)):
                 if 'rsync.exe' in files:
-                    self.settings['Executables']['rsync'] = str(path.join(root, 'rsync.exe'))
+                    self.settings['Settings']['Executables']['rsync'] = \
+                    str(path.join(root, 'rsync.exe'))
                 if 'curl.exe' in files:
-                    self.settings['Executables']['curl'] = str(path.join(root, 'curl.exe'))
+                    self.settings['Settings']['Executables']['curl'] = \
+                    str(path.join(root, 'curl.exe'))
         
         # Use helper function to write out the json file which will include the 'Executables' dict.
         proc_helpers.parse_json(self.settings, 'w')
