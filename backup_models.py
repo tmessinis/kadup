@@ -16,9 +16,18 @@ class BackupObject(object):
         proc_helpers.get_valid_path('backup', self.settings['Settings']['Operating_System'])
         return_dict['dest_dict'] = \
         proc_helpers.get_valid_path('destination', self.settings['Settings']['Operating_System'])
-        return_dict['schedule'] = \
-        proc_helpers.get_valid_yes_no('Is this a one time task or is it going to repeat?')
+        return_dict['one_time'] = \
+        proc_helpers.get_valid_yes_no('Is this a one time task (y/n)? ')
+        if return_dict['one_time'] is 'n' or \
+        return_dict['one_time'] is 'no':
+            print('Please answer the following questions to define time and frequency of the backup task')
+            return_dict['schedule'] = {}
+            return_dict['schedule']['start_time'] = \
+            input('Enter the time, in 24-hour format HH:MM, that kadup should begin backing up: ')
+            return_dict['schedule']['interval'] = \
+            input('Should this backup run DAILY, WEEKLY, or MONTHLY? ')
         
+        return return_dict
 
 class WindowsBackup(BackupObject):
     def __init__(self, settings):

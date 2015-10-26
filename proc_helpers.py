@@ -31,7 +31,7 @@ def make_json():
         'Settings': {
             'Operating_System': system(),
             'Architecture': machine()
-        }
+        },
         'Index': {}
     }
     
@@ -78,14 +78,17 @@ def get_valid_path(label, operating_system):
         inputted_pathname = input('Enter {0} directory: '.format(label))
         if check_valid_path(inputted_pathname, operating_system):
             return inputted_pathname
-        print('\nThat path is not valid! Please enter a valid path for your OS.\n')
+        print('That path is not valid! Please enter a valid path for your OS.\n')
         
 def get_valid_yes_no(question_text):
     while True:
         user_answer = input('{0}'.format(question_text))
-        if user_answer is 'y' or 'yes' or 'n' or 'no':
+        if user_answer is 'y' or\
+        user_answer is 'yes' or \
+        user_answer is 'n' or \
+        user_answer is 'no':
             return user_answer
-        print('\nThat is no a valid response!')
+        print('That is no a valid response!\n')
     
 # Returns a tuple which includes the OS and system architecture of the user's
 # computer.

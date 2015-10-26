@@ -14,13 +14,14 @@ def main():
             main()
         else:    
             operating_system = settings['Settings']['Operating_System']
-            architecture = settings['Settings']['Architecture']
+            #architecture = settings['Settings']['Architecture']
             
-            backup_dir = proc_helpers.get_valid_path('backup', operating_system)
-            dest_dir = proc_helpers.get_valid_path('destination', operating_system)
+            #backup_dir = proc_helpers.get_valid_path('backup', operating_system)
+            #dest_dir = proc_helpers.get_valid_path('destination', operating_system)
             
             backup_object = BACKUP_OBJECTS_DICT[operating_system]
             print(backup_object.get_executables())
+            print(backup_object.cli_questions())
             return None
         
     except Exception as error:
