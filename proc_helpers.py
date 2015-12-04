@@ -1,13 +1,11 @@
-import json, re
+import json, re, logging
 
 from platform import system, machine
+from time import sleep
 
 # A helper function that will create log entries based on the type provided. It can be
 # used for logging exceptions or for logging the output of a command.
-def make_log(type, file, error):
-    import logging
-    from time import sleep
-    
+def make_log(type, file, message):
     # Set up the format of the log entry. It starts with date and time, the type of log
     # entry (ERROR, INFO etc.) the name of the file which called it and the message.
     log_format = '%(asctime)s [%(levelname)s] <%(name)s> %(message)s'
@@ -17,17 +15,16 @@ def make_log(type, file, error):
     
     # Conditionals to generate the appropriate log entry.
     if type == 'exception':
-        logger.exception(error)
-        open('error.log', 'a').write('\n')  
+        logger.exception(message)
+        open('error.log', 'a').write('\n')
+    elif type == 'info':
+        logger.info(message)
+        open(file, 'a').write('\n')
 
     sleep(5)
 
 def make_json():
-    from os import urandom
-    from hashlib import sha256
-    
     json_data = {
-        #'ID': '{0}'.format(sha256(urandom(666)).hexdigest()),
         'Settings': {
             'Operating_System': system(),
             'Architecture': machine()
