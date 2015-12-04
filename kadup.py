@@ -24,8 +24,8 @@ def main():
             return None
         
     except Exception as error:
-        print('Kadup has encountered an error. Please check error.log.')
-        proc_helpers.make_log('exception', 'error.log', error)
+        print('Kadup has encountered an error. Please check kadup.log.')
+        proc_helpers.make_log('exception', error)
     
 if __name__ == '__main__':
     main()

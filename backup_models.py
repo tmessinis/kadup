@@ -90,19 +90,21 @@ class WindowsBackup(BackupObject):
     
     def run_rsync(self, runtime_settings):
         command_parameters = {
-            'rsync_path': runtime_settings['Executables']['rsync'],
-            'backup_path': self.make_unix_pathname(runtime_settings['Questions']['backup_dir']),
-            'dest_path': self.make_unix_pathname(runtime_settings['Questions']['dest_dir'])
+            'rsync_path': runtime_settings['Settings']['Executables']['rsync'],
+            'backup_path': self.make_unix_pathname\
+            (runtime_settings['Settings']['Questions']['backup_dir']),
+            'dest_path': self.make_unix_pathname\
+            (runtime_settings['Settings']['Questions']['dest_dir'])
         }
         
         command = self.rsync_command(command_parameters['rsync_path'],
-                                    command_parametes['backup_path'],
+                                    command_parameters['backup_path'],
                                     command_parameters['dest_path'])
     
         run_command = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,\
         universal_newlines=True, shell=True)
         
-        proc_helpers.make_log('info', 'rsync.log', run_command.stdout.read())
+        proc_helpers.make_log('info', run_command.stdout.read())
         
         return None
         
@@ -114,7 +116,6 @@ class WindowsBackup(BackupObject):
             
         if runtime_settings['Settings']['Executables'] == None:
             runtime_settings = self.get_executables()
-            
         self.run_rsync(runtime_settings)
     
 class UnixBackup(BackupObject):

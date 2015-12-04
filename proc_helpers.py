@@ -5,21 +5,21 @@ from time import sleep
 
 # A helper function that will create log entries based on the type provided. It can be
 # used for logging exceptions or for logging the output of a command.
-def make_log(type, file, message):
+def make_log(type, message):
     # Set up the format of the log entry. It starts with date and time, the type of log
     # entry (ERROR, INFO etc.) the name of the file which called it and the message.
     log_format = '%(asctime)s [%(levelname)s] <%(name)s> %(message)s'
     
-    logging.basicConfig(filename = file, level = logging.DEBUG, format = log_format)
+    logging.basicConfig(filename = 'kadup.log', level = logging.DEBUG, format = log_format)
     logger = logging.getLogger(__file__)
     
     # Conditionals to generate the appropriate log entry.
     if type == 'exception':
         logger.exception(message)
-        open('error.log', 'a').write('\n')
+        open('kadup.log', 'a').write('\n=========================================================\n')
     elif type == 'info':
         logger.info(message)
-        open(file, 'a').write('\n')
+        open('kadup.log', 'a').write('\n=========================================================\n')
 
     sleep(5)
 
@@ -27,7 +27,9 @@ def make_json():
     json_data = {
         'Settings': {
             'Operating_System': system(),
-            'Architecture': machine()
+            'Architecture': machine(),
+            'Executables': None,
+            'Questions': None,
         },
         'Index': {}
     }
@@ -44,8 +46,8 @@ def parse_json(json_data, option):
             with open('settings.json', option) as data:
                 return json.dump(json_data, data)
         except Exception as error:
-            print('There was an problem generating the settings.json file. Check error.log.')
-            make_log('exception', 'error.log', error)
+            print('There was an problem generating the settings.json file. Check kadup.log.')
+            make_log('exception', error)
             
             return None
     else:
@@ -54,9 +56,9 @@ def parse_json(json_data, option):
                 parsed_json = json.load(data)
             return parsed_json
         except Exception as error:
-            print('The json file {0} does not contain valid json! Check error.log.\
+            print('The json file {0} does not contain valid json! Check kadup.log.\
                 \nIf {0} does not exist then Kadup will attempt to generate one.'.format(json_data))
-            make_log('exception', 'error.log', error)
+            make_log('exception', error)
             
             return None               
 
@@ -97,8 +99,8 @@ def get_settings(json_file):
         try:
             return parsed_json
         except Exception as error:
-            print('The entry for Operating_System is missing in settings.json! Check error.log')
-            make_log('exception', 'error.log', error)
+            print('The entry for Operating_System is missing in settings.json! Check kadup.log')
+            make_log('exception', error)
             
             return None
     else:
