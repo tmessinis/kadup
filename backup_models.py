@@ -13,33 +13,64 @@ class BackupObject(object):
         
         print('Welcome to Kadup backup!\n')
         self.settings['Settings']['Questions']['backup_dir'] = \
-        proc_helpers.get_valid_path('backup', self.settings['Settings']['Operating_System'])
+            proc_helpers.get_valid_path('backup', self.settings['Settings']['Operating_System'])
         self.settings['Settings']['Questions']['dest_dir'] = \
-        proc_helpers.get_valid_path('destination', self.settings['Settings']['Operating_System'])
+            proc_helpers.get_valid_path('destination', self.settings['Settings']['Operating_System'])
         self.settings['Settings']['Questions']['one_time'] = \
-        proc_helpers.get_valid_yes_no('Is this a one time task (y/n)? ')
+            proc_helpers.get_valid_yes_no('Is this a one time task (y/n)? ')
+                
         if self.settings['Settings']['Questions']['one_time'] is 'n' or \
         self.settings['Settings']['Questions']['one_time'] is 'no':
             print('Please answer the following questions to define time and frequency of the backup task')
             self.settings['Settings']['Questions']['schedule'] = {}
             self.settings['Settings']['Questions']['schedule']['start_time'] = \
-            input('Enter the time, in 24-hour format HH:MM, that kadup should begin backing up: ')
+                input('Enter the time, in 24-hour format HH:MM, that kadup should begin backing up: ')
             self.settings['Settings']['Questions']['schedule']['interval'] = \
-            input('Should this backup run DAILY, WEEKLY, or MONTHLY? ')
+                input('Should this backup run DAILY, WEEKLY, or MONTHLY? ')
+            
+        if self.settings['Settings']['Questions']['schedule']['interval'] == 'WEEKLY' or \
+        self.settings['Settings']['Questions']['schedule']['interval'] == 'weekly':
+            self.settings['Settings']['Questions']['schedule']['day_of_week'] = \
+                input('Which day of the week do you want kadup to run (MON-SUN)? ')
+                
+        if self.settings['Settings']['Questions']['schedule']['interval'] == 'MONTHLY' or \
+        self.settings['Settings']['Questions']['schedule']['interval'] == 'monthly':
+            self.settings['Settings']['Questions']['schedule']['day_of_month'] = \
+                input('Which day of the month do you want kadup to run (1-31)? ')
         
         proc_helpers.parse_json(self.settings, 'w')
         
         return self.settings
         
+    # A simple command line interface for kadup.
     def kadup_cli(self):
         saved_settings = proc_helpers.get_settings('settings.json')
+        intro_help = """
+====================================================================================================
+    Welcome to Kadup's command line interface!
+    Commands:   * run-backup - Run's rsync based on the settings.json file. If that file is missing    
+                    info kadup will go through its questionnaire.
+                * print-settings - Will list the contents of your settings.json file.
+                * help - Will print this information again.
+                * exit or quit - Exits the command line interface.
+====================================================================================================
+        """
+        print(intro_help)
         while True:
-            command = input('kadup -> ')
+            command = input('->>>--kadup---> ')
             if command == 'exit' or command == 'quit':
                 break
-            elif command == 'list':
+            elif command == 'help':
+                print(intro_help)
+            elif command == 'print-settings':
                 pprint.pprint(saved_settings)
-    
+            elif command == 'run-backup':
+                if saved_settings['Settings']['Questions'] == None:
+                    saved_settings = self.cli_questions()
+                if saved_settings['Settings']['Executables'] == None:
+                    saved_settings = self.get_executables()
+                self.run_rsync(saved_settings)
+                
     # Generates the syntax of the rsync command to be used.
     def rsync_command(self, rsync_path, backup_path, dest_path):
         return '{0} -azt --verbose --delete "{1}" "{2}"'.format(rsync_path, backup_path, dest_path)
@@ -117,9 +148,13 @@ class WindowsBackup(BackupObject):
         
         return None
         
-    def schedule_task(self):
+    def schtasks_command(self):
         pass
         
+    def schedule_task(self):
+        pass
+    
+    # The main function to begin a backup operation.
     def run_backup(self):
         runtime_settings = self.settings
         

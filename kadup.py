@@ -23,9 +23,10 @@ def main():
             
             backup_object = BACKUP_OBJECTS_DICT[operating_system]
             
-            arg_parser = ArgumentParser(description='Kadup-CLI')
-            arg_parser.add_argument('--cli', dest='cli', help='Start Kadup Command Line Interface',\
-                default=None)
+            help_text = "To start the Kadup CLI simply run: $ python3 kadup.py -c run"
+            
+            arg_parser = ArgumentParser()
+            arg_parser.add_argument('-c', dest='cli', help=help_text, default=None)
             
             if arg_parser.parse_args().cli == 'run':
                 backup_object.kadup_cli()
