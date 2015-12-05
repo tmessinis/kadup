@@ -1,4 +1,4 @@
-import subprocess, proc_helpers
+import subprocess, proc_helpers, pprint
 
 from os import walk, path
 from string import ascii_uppercase
@@ -30,6 +30,15 @@ class BackupObject(object):
         proc_helpers.parse_json(self.settings, 'w')
         
         return self.settings
+        
+    def kadup_cli(self):
+        saved_settings = proc_helpers.get_settings('settings.json')
+        while True:
+            command = input('kadup -> ')
+            if command == 'exit' or command == 'quit':
+                break
+            elif command == 'list':
+                pprint.pprint(saved_settings)
     
     # Generates the syntax of the rsync command to be used.
     def rsync_command(self, rsync_path, backup_path, dest_path):
@@ -107,6 +116,9 @@ class WindowsBackup(BackupObject):
         proc_helpers.make_log('info', run_command.stdout.read())
         
         return None
+        
+    def schedule_task(self):
+        pass
         
     def run_backup(self):
         runtime_settings = self.settings

@@ -31,7 +31,7 @@ def make_json():
             'Executables': None,
             'Questions': None,
         },
-        'Index': {}
+        'Tasks_Index': {}
     }
     
     return json_data

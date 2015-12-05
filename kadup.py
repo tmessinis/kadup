@@ -1,4 +1,5 @@
-import platform, backup_models, proc_helpers
+import platform, backup_models, proc_helpers, sys
+from argparse import ArgumentParser
 
 def main():
     try:
@@ -14,13 +15,23 @@ def main():
             main()
         else:    
             operating_system = settings['Settings']['Operating_System']
+            
             #architecture = settings['Settings']['Architecture']
             
             #backup_dir = proc_helpers.get_valid_path('backup', operating_system)
             #dest_dir = proc_helpers.get_valid_path('destination', operating_system)
             
             backup_object = BACKUP_OBJECTS_DICT[operating_system]
-            backup_object.run_backup()
+            
+            arg_parser = ArgumentParser(description='Kadup-CLI')
+            arg_parser.add_argument('--cli', dest='cli', help='Start Kadup Command Line Interface',\
+                default=None)
+            
+            if arg_parser.parse_args().cli == 'run':
+                backup_object.kadup_cli()
+            else:
+                backup_object.run_backup()
+                
             return None
         
     except Exception as error:
