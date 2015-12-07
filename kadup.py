@@ -16,11 +16,6 @@ def main():
         else:    
             operating_system = settings['Settings']['Operating_System']
             
-            #architecture = settings['Settings']['Architecture']
-            
-            #backup_dir = proc_helpers.get_valid_path('backup', operating_system)
-            #dest_dir = proc_helpers.get_valid_path('destination', operating_system)
-            
             backup_object = BACKUP_OBJECTS_DICT[operating_system]
             
             help_text = "To start the Kadup CLI simply run: $ python3 kadup.py -c run"
