@@ -1,3 +1,5 @@
+# Kadup
+
 Kadup provides a command line interface to schedule and run rsync to backup local directories.
 
 On Windows it utilizes Cygwin with rsync installed and uses schtaks command to schedule when rsync will run.
