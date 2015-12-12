@@ -64,18 +64,27 @@ def parse_json(json_data, option):
 
 # Checks to see if a pathname entered by the user is valid based on Windows and Unix standards.
 # The pathname is matched against a regex string.            
-def check_valid_path(dir, operating_system):
+def check_valid_path(path, operating_system):
     if operating_system == 'Windows':
-        return re.match(r"^[A-Za-z]+?:\\[^<>:\"/\|\?\*]*\\*\.?[^<>:\"/\|\?\*]*$", dir)
+        return re.match(r"^[A-Za-z]+?:\\[^<>:\"/\|\?\*]*\\*\.?[^<>:\"/\|\?\*]*$", path)
     else:
         return None
+        
+def check_ip_address(path):
+    ip_addr = ''
+    for char in path:
+        if str.isdigit(char) or char == '.':
+            ip_addr += char
+            
+    return re.match(r"^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$", ip_addr)
 
 # Requests that the user enter a pathname and checks it to see if it's valid based on their
 # operating system.
 def get_valid_path(label, operating_system):
     while True:
         inputted_pathname = input('Enter {0} directory: '.format(label))
-        if check_valid_path(inputted_pathname, operating_system):
+        if check_valid_path(inputted_pathname, operating_system) or \
+        check_ip_address(inputted_pathname):
             return inputted_pathname
         print('That path is not valid! Please enter a valid path for your OS.\n')
         

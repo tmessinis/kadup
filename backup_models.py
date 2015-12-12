@@ -28,15 +28,15 @@ class BackupObject(object):
             self.settings['Settings']['Questions']['schedule']['interval'] = \
                 input('Should this backup run DAILY, WEEKLY, or MONTHLY? ')
             
-        if self.settings['Settings']['Questions']['schedule']['interval'] == 'WEEKLY' or \
-        self.settings['Settings']['Questions']['schedule']['interval'] == 'weekly':
-            self.settings['Settings']['Questions']['schedule']['day_of_week'] = \
-                input('Which day of the week do you want kadup to run (MON-SUN)? ')
-                
-        if self.settings['Settings']['Questions']['schedule']['interval'] == 'MONTHLY' or \
-        self.settings['Settings']['Questions']['schedule']['interval'] == 'monthly':
-            self.settings['Settings']['Questions']['schedule']['day_of_month'] = \
-                input('Which day of the month do you want kadup to run (1-31)? ')
+            if self.settings['Settings']['Questions']['schedule']['interval'] == 'WEEKLY' or \
+            self.settings['Settings']['Questions']['schedule']['interval'] == 'weekly':
+                self.settings['Settings']['Questions']['schedule']['day_of_week'] = \
+                    input('Which day of the week do you want kadup to run (MON-SUN)? ')
+                    
+            if self.settings['Settings']['Questions']['schedule']['interval'] == 'MONTHLY' or \
+            self.settings['Settings']['Questions']['schedule']['interval'] == 'monthly':
+                self.settings['Settings']['Questions']['schedule']['day_of_month'] = \
+                    input('Which day of the month do you want kadup to run (1-31)? ')
         
         proc_helpers.parse_json(self.settings, 'w')
         
@@ -82,14 +82,17 @@ class WindowsBackup(BackupObject):
     # Helper function that converts Windows style pathnames to Unix for use with Cygwin.
     # Used for the backup and destination directories.
     def make_unix_pathname(self, pathname):
-        split_pathname = pathname.split('\\')
-        cygwin_pathname = '/cygdrive'
-        for path in split_pathname:
-            if ':' in path:
-                cygwin_pathname += '/' + path[:-1]
-            else:
-                cygwin_pathname += '/' + path
-        return cygwin_pathname
+        if '\\' in pathname:
+            split_pathname = pathname.split('\\')
+            cygwin_pathname = '/cygdrive'
+            for path in split_pathname:
+                if ':' in path:
+                    cygwin_pathname += '/' + path[:-1]
+                else:
+                    cygwin_pathname += '/' + path
+            return cygwin_pathname
+        else:
+            return pathname
     
     # A method which searches the users HDDs in a Windows environment for the cygwin executables
     # to be used with this program. The program assumes that the cygwin folder is installed at the
